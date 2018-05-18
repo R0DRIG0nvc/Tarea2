@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from basket.models import Player
 from basket.forms import PlayerForm
 from django.shortcuts import redirect
+from django.http import HttpResponse, JsonResponse
 
 
 def index(request):
@@ -34,7 +35,8 @@ def add(request):
 
 def list(request):
     if request.method == 'POST':
-        print ("entro akjshdadna ", request.id)
+        get_object_or_404(Player, pk=request.POST['id']).delete()
+        return JsonResponse({})
     data = {'players': Player.objects.all()}
     template_name = "player/listar.html"
     return render(request, template_name, data)
