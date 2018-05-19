@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from basket.models import Player
-from basket.forms import PlayerForm
+from basket.forms import *
 from django.shortcuts import redirect
 from django.http import HttpResponse, JsonResponse
 
@@ -42,13 +42,13 @@ def list(request):
     return render(request, template_name, data)
 
 
-def detail(request, player_id):
-
+def edit(request, player_id):
     data = {}
-    template_name = 'player/detail_player.html'
-
-    # SELECT * FROM player WHERE id = player_id
-    data['player'] = Player.objects.get(pk=player_id)
-    # import pdb;pdb.set_trace()
+    if request.POST:
+        formPlayer = EditPlayerForm(request.POST, request.FILES, instance=Player.objects.get(pk=player_id))
+        if formPlayer.is_valid():
+            formPlayer.save()
+    template_name = 'player/edit.html'
+    data['player'] = EditPlayerForm(instance=Player.objects.get(pk=player_id))
 
     return render(request, template_name, data)
